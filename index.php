@@ -11,6 +11,7 @@ $app = new \Slim\Slim();
 $app->config("debug", true);
 
 //Chamando as rotas
+require_once("functions.php");
 require_once("site.php");
 require_once("admin.php");
 require_once("admin-users.php");
