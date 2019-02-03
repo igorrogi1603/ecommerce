@@ -10,8 +10,8 @@ class Mailer {
 	//	  USAR UM GMAIL JA EXISTENTE PARA ENVIAR OS EMAIL DE RECUPERAÇÃO     //
 	//																		 //
 	//-----------------------------------------------------------------------//
-	const USERNAME = "testesistemaigor@gmail.com";
-	const PASSWORD = "futebol16";
+	const USERNAME = "seu email@gmail.com";
+	const PASSWORD = "sua senha";
 	const NAME_FROM = "Hcode Store";
 
 	private $mail;
