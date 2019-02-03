@@ -10,6 +10,8 @@ class User extends Model {
 
 	const SESSION = "User";
 	const SECRET = "HcodePhp7_Secret";
+	const ERROR = "UserError";
+	const ERROR_REGISTER = "UserErrorRegister";
 
 	public static function getFromSession()
 	{
@@ -63,7 +65,7 @@ class User extends Model {
 
 		$sql = new Sql();
 
-		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
+		$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b ON a.idperson = b.idperson WHERE a.deslogin = :LOGIN", array(
 			":LOGIN"=>$login
 		));
 
@@ -77,6 +79,8 @@ class User extends Model {
 		if (password_verify($password, $data["despassword"]) === true)
 		{
 			$user = new User();
+
+			$data['desperson'] = utf8_encode($data['desperson']);
 
 			$user->setData($data);
 
@@ -93,10 +97,15 @@ class User extends Model {
 	public static function verifyLogin($inadmin = true)
 	{
 
-		if (User::checkLogin($inadmin))
-		{
-			header("Location: /admin/login");
+		if (!User::checkLogin($inadmin))
+		{	
+			if ($inadmin) {
+				header("Location: /admin/login");	
+			} else {
+				header("Location: /login");	
+			}
 			exit;
+			
 		}
 
 	}
@@ -118,9 +127,9 @@ class User extends Model {
 		$sql = new Sql();
 
 		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
-			":desperson" => $this->getdesperson(),
+			":desperson" => utf8_decode($this->getdesperson()),
 			":deslogin" => $this->getdeslogin(),
-			":despassword" => $this->getdespassword(),
+			":despassword" => User::getPasswordHash($this->getdespassword()),
 			":desemail" => $this->getdesemail(),
 			":nrphone" => $this->getnrphone(),
 			":inadmin" => $this->getinadmin()
@@ -138,7 +147,12 @@ class User extends Model {
 			":iduser"=>$iduser 
 		));
 
-		$this->setData($results[0]);
+		$data = $results[0];
+
+		$data['desperson'] = utf8_encode($data['desperson']);
+
+		$this->setData($data);
+
 	}
 
 	public function update()
@@ -147,9 +161,9 @@ class User extends Model {
 
 		$results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", array(
 			":iduser" => $this->getiduser(),
-			":desperson" => $this->getdesperson(),
+			":desperson" => utf8_decode($this->getdesperson()),
 			":deslogin" => $this->getdeslogin(),
-			":despassword" => $this->getdespassword(),
+			":despassword" => User::getPasswordHash($this->getdespassword()),
 			":desemail" => $this->getdesemail(),
 			":nrphone" => $this->getnrphone(),
 			":inadmin" => $this->getinadmin()
@@ -272,6 +286,50 @@ class User extends Model {
 			":password"=>$password,
 			":iduser"=>$this->getiduser()
 		));
+	}
+
+	public static function setError($msg)
+	{
+
+		$_SESSION[User::ERROR] = $msg;
+
+	}
+
+	public static function getError()
+	{
+		$msg = (isset($_SESSION[User::ERROR]) && $_SESSION[User::ERROR]) ? $_SESSION[User::ERROR] : '';
+
+		User::clearError();
+
+		return $msg;
+	}
+
+	public static function clearError()
+	{
+		$_SESSION[User::ERROR] = NULL;
+	}
+
+	public static function setErrorRegister($msg)
+	{
+		$_SESSION[User::ERROR_REGISTER] = $msg;
+	}
+
+	public static function checkLoginExist($login)
+	{
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :deslogin", [
+			':deslogin'=>$login
+		]);
+
+		return (count($results) > 0);
+	}
+
+	public static function getPasswordHash($password)
+	{
+		return password_hash($password, PASSWORD_DEFAULT, [
+			'cost'=>12
+		]);
 	}
 
 }
