@@ -40,7 +40,7 @@
             Para
             <address>
                 <strong><?php echo htmlspecialchars( $order["desperson"], ENT_COMPAT, 'UTF-8', FALSE ); ?></strong><br>
-                <?php echo htmlspecialchars( $order["desaddress"], ENT_COMPAT, 'UTF-8', FALSE ); ?>, <?php echo htmlspecialchars( $order["descomplement"], ENT_COMPAT, 'UTF-8', FALSE ); ?><br>
+                <?php echo htmlspecialchars( $order["desaddress"], ENT_COMPAT, 'UTF-8', FALSE ); ?> <?php echo htmlspecialchars( $order["descomplement"], ENT_COMPAT, 'UTF-8', FALSE ); ?><br>
                 <?php echo htmlspecialchars( $order["descity"], ENT_COMPAT, 'UTF-8', FALSE ); ?> - <?php echo htmlspecialchars( $order["desstate"], ENT_COMPAT, 'UTF-8', FALSE ); ?><br>
                 <?php if( $order["nrphone"] && $order["nrphone"]!='0' ){ ?>Telefone: <?php echo htmlspecialchars( $order["nrphone"], ENT_COMPAT, 'UTF-8', FALSE ); ?><br><?php } ?>
                 E-mail: <?php echo htmlspecialchars( $order["desemail"], ENT_COMPAT, 'UTF-8', FALSE ); ?>
@@ -139,11 +139,11 @@
         <!-- this row will not appear when printing -->
         <div class="row no-print">
             <div class="col-xs-12">
-                <button type="button" onclick="window.location.href = '/admin/orders/<?php echo htmlspecialchars( $order["idstatus"], ENT_COMPAT, 'UTF-8', FALSE ); ?>/status'" class="btn btn-default pull-left" style="margin-left: 5px;">
-                    <i class="fa fa-pencil"></i> Editar Status
+                <button type="button" onclick="window.location.href = '/admin/orders/<?php echo htmlspecialchars( $order["idorder"], ENT_COMPAT, 'UTF-8', FALSE ); ?>/status'" class="btn btn-default pull-left" style="margin-left: 5px;">
+                     <i class="fa fa-pencil"></i> Editar Status
                 </button>
                 <button type="button" onclick="window.open('/boleto/<?php echo htmlspecialchars( $order["idstatus"], ENT_COMPAT, 'UTF-8', FALSE ); ?>')" class="btn btn-default pull-left" style="margin-left: 5px;">
-                    <i class="fa fa-barcode"></i> Boleto
+                     <i class="fa fa-barcode"></i> Boleto
                 </button>
 
                 
