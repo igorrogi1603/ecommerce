@@ -15,7 +15,7 @@ $app->get("/admin/categories", function(){
 
 	if ($search != '') {
 
-		$pagination = Category::getPageSearch($search, $page, 1);
+		$pagination = Category::getPageSearch($search, $page);
 
 	} else {
 
